@@ -5,6 +5,7 @@ $db = require __DIR__ . '/db.php';
 
 $config = [
     'id' => 'basic',
+    'language' => 'pt-BR',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
     'aliases' => [
@@ -15,13 +16,34 @@ $config = [
         'request' => [
             // !!! insert a secret key in the following (if it is empty) - this is required by cookie validation
             'cookieValidationKey' => 'uOqCyXt5OGYhsUsTdADtrjZyDBzxwKVe',
+            'parsers' => [
+                'application/json' => 'yii\web\JsonParser',
+            ]
         ],
+        #Para usar Gii, comentar response
+        'response' => [
+            'format' => yii\web\Response::FORMAT_JSON,
+            'charset' => 'UTF-8',
+
+        ],
+        /*'response' => [
+            'formatters' => [
+                \yii\web\Response::FORMAT_JSON => [
+                    'class' => 'yii\web\JsonResponseFormatter',
+                    'prettyPrint' => YII_DEBUG, // use "pretty" output in debug mode
+                    'encodeOptions' => JSON_UNESCAPED_SLASHES | JSON_UNESCAPED_UNICODE,
+                ],
+            ],
+        ],*/
+
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
         'user' => [
             'identityClass' => 'app\models\User',
-            'enableAutoLogin' => true,
+            //'enableAutoLogin' => true,
+            'enableSession' => false,
+            'loginUrl' => null
         ],
         'errorHandler' => [
             'errorAction' => 'site/error',
@@ -43,14 +65,52 @@ $config = [
             ],
         ],
         'db' => $db,
-        /*
+
+        //Aqui definimos as rotas da api
         'urlManager' => [
             'enablePrettyUrl' => true,
+            'enableStrictParsing' => true,
             'showScriptName' => false,
             'rules' => [
+                // ############################################################
+                // Algumas instruções
+                // ############################################################
+
+                /*
+                 * w+ = aceita string,
+                 * d+ = limita o parametro apenas para numeros,
+                 * sem nada = aceita todos caracteres
+                 */
+
+                #['class' => 'yii\rest\UrlRule', 'controller' => 'user'],
+                #['class' => 'yii\rest\UrlRule', 'controller' => 'movie'],
+
+                /*
+                 * ENDPOINTS
+                 * Autenticação (HttpBearerAuth) => Passar no Header Authorization => Bearer wilson-token
+                 * GET http://localhost:8080/movie/id/1
+                 * GET http://localhost:8080/movie/all
+                 * POST http://localhost:8080/movie/create
+                 * PUT http://localhost:8080/movie/update/1
+                 * DELETE http://localhost:8080/movie/delete/1
+                 */
+
+                [
+                    'class' => 'yii\rest\UrlRule',
+                    'pluralize' => false,
+                    'controller' => 'movie',
+                    'extraPatterns' => [
+                        'GET id/<id:\d+>' => 'view-app',
+                        'GET all' => 'index-app',
+                        'POST create' => 'create-app',
+                        'PUT update/<id:\d+>' => 'update-app',
+                        'DELETE delete/<id:\d+>' => 'delete-app'
+                    ]
+                ],
+
             ],
-        ],
-        */
+        ]
+
     ],
     'params' => $params,
 ];

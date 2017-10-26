@@ -210,3 +210,16 @@ vendor/bin/codecept run functional,unit -- --coverage-html --coverage-xml
 ```
 
 You can see code coverage output under the `tests/_output` directory.
+
+
+#Instruções by Wilson -> Ambiente Linux
+
+1) Executar a aplicação sem configurar um servidor http(apache 
+ou nginx), usamos o ( built-in PHP web server). 
+Na pasta raiz do projeto, rode pelo terminal o comando:  
+"php yii serve" ou "php yii serve --port=8888"
+
+2) Em config/db, configure o banco de dados . O script para criar
+ a base no mysql desta api se encontra na raiz 
+ do projeto no arquivo chamado mysql.sql
+
